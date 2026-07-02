@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎀 로열 런치 요정 🎀</title>
+    <!-- Tailwind CSS (디자인을 위해 사용) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 귀여운 폰트 불러오기 (주아체 & 고운돋움) -->
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            /* 핑크빛 그라데이션 배경 */
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            min-height: 100vh;
+        }
+        .title-font {
+            font-family: 'Jua', sans-serif;
+        }
+        /* 귀여운 스크롤바 바 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fdf2f8; }
+        ::-webkit-scrollbar-thumb { background: #f9a8d4; border-radius: 4px; }
+        
+        /* 달력 아이콘 색상을 핑크톤으로 조절 */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            filter: invert(0.6) sepia(1) saturate(3) hue-rotate(295deg);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <!-- 메인 컨테이너 (모바일 화면에 맞춘 최대 너비 설정) -->
+    <div class="bg-white/95 backdrop-blur-sm rounded-[2.5rem] shadow-[0_10px_40px_rgba(236,72,153,0.3)] border-[3px] border-pink-200 w-full max-w-md overflow-hidden relative">
+        
+        <!-- 상단 장식 -->
+        <div class="h-4 bg-gradient-to-r from-pink-300 via-purple-300 to-pink-300"></div>
+
+        <div class="p-6">
+            <!-- 헤더 (제목) -->
+            <div class="text-center mb-6">
+                <h1 class="title-font text-3xl text-pink-600 mb-1 flex justify-center items-center gap-2">
+                    <span>👑</span> 로열 런치 요정 <span>👑</span>
+                </h1>
+                <p class="text-pink-400 text-sm">공주님을 위한 오늘의 만찬 메뉴</p>
+            </div>
+
+            <!-- 날짜 선택기 -->
+            <div class="mb-6 bg-pink-50 p-4 rounded-2xl border border-pink-100 flex items-center justify-between">
+                <label for="date-picker" class="text-pink-700 font-bold">날짜 선택 🗓️</label>
+                <input type="date" id="date-picker" 
+                       class="bg-white border-2 border-pink-200 text-pink-700 text-sm rounded-full focus:ring-pink-400 focus:border-pink-400 block p-2 outline-none shadow-sm cursor-pointer"
+                       min="2026-07-02" max="2026-07-08">
+            </div>
+
+            <!-- 급식 메뉴가 표시될 영역 -->
+            <div id="menu-container" class="space-y-3 min-h-[200px]">
+                <!-- 자바스크립트를 통해 메뉴가 여기에 추가됩니다 -->
+            </div>
+
+            <!-- 알레르기 안내 (범례) -->
+            <div class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <h3 class="text-xs font-bold text-gray-500 mb-2">💡 알레르기 요정의 안내</h3>
+                <div class="flex flex-wrap gap-2 text-xs text-gray-600">
+                    <span class="flex items-center gap-1">🥚 계란</span>
+                    <span class="flex items-center gap-1">🥛 우유</span>
+                    <span class="flex items-center gap-1">🌾 밀</span>
+                    <span class="flex items-center gap-1">🫘 대두</span>
+                    <span class="flex items-center gap-1">🐷 돼지고기</span>
+                    <span class="flex items-center gap-1">🐮 소고기</span>
+                    <span class="flex items-center gap-1">🐔 닭고기</span>
+                    <span class="flex items-center gap-1">🦐 새우</span>
+                    <span class="flex items-center gap-1">🍅 토마토</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 로직 -->
+    <script>
+        // 1. 임시 데이터 (5일치 샘플 메뉴)
+        // 날짜별로 메뉴 이름과 알레르기 정보를 포함합니다.
+        const mockMenuData = {
+            "2026-07-02": [
+                { name: "현미밥", allergies: [] },
+                { name: "마라탕", allergies: ["소고기", "밀", "대두"] },
+                { name: "수제 꿔바로우", allergies: ["돼지고기", "밀", "대두"] },
+                { name: "단무지 무침", allergies: [] },
+                { name: "딸기 우유", allergies: ["우유"] }
+            ],
+            "2026-07-03": [
+                { name: "참치마요 덮밥", allergies: ["계란", "대두", "밀"] },
+                { name: "유부 장국", allergies: ["대두", "밀"] },
+                { name: "로제 떡볶이", allergies: ["밀", "우유", "토마토"] },
+                { name: "깍두기", allergies: ["새우"] },
+                { name: "초코 무스 케이크", allergies: ["밀", "계란", "우유"] }
+            ],
+            "2026-07-06": [
+                { name: "클로렐라 쌀밥", allergies: [] },
+                { name: "꽃게탕", allergies: ["대두", "게"] },
+                { name: "치즈 닭갈비", allergies: ["닭고기", "우유"] },
+                { name: "계란말이", allergies: ["계란"] },
+                { name: "배추김치", allergies: ["새우"] }
+            ],
+            "2026-07-07": [
+                { name: "스파게티", allergies: ["밀", "토마토", "돼지고기"] },
+                { name: "양송이 스프", allergies: ["우유", "밀"] },
+                { name: "수제 피클", allergies: [] },
+                { name: "마늘빵", allergies: ["밀", "우유"] },
+                { name: "청포도 에이드", allergies: [] }
+            ],
+            "2026-07-08": [
+                { name: "오곡밥", allergies: [] },
+                { name: "소고기 미역국", allergies: ["소고기", "대두"] },
+                { name: "오징어 볶음", allergies: ["대두"] },
+                { name: "애호박 전", allergies: ["밀", "계란"] },
+                { name: "포도", allergies: [] }
+            ]
+        };
+
+        // 2. 알레르기 정보에 매칭되는 이모티콘 맵
+        const allergyIcons = {
+            "계란": "🥚", "우유": "🥛", "밀": "🌾", "대두": "🫘",
+            "돼지고기": "🐷", "소고기": "🐮", "닭고기": "🐔",
+            "새우": "🦐", "게": "🦀", "토마토": "🍅"
+        };
+
+        // HTML 요소 가져오기
+        const datePicker = document.getElementById('date-picker');
+        const menuContainer = document.getElementById('menu-container');
+
+        // 알레르기 아이콘 생성 함수
+        function getAllergyHtml(allergies) {
+            if (!allergies || allergies.length === 0) return `<span class="text-xs text-pink-300">✨</span>`;
+            
+            return allergies.map(allergy => {
+                const icon = allergyIcons[allergy] || '⚠️';
+                return `<span class="text-sm bg-white rounded-full p-1 shadow-sm border border-pink-100" title="${allergy}">${icon}</span>`;
+            }).join("");
+        }
+
+        // 화면에 메뉴 렌더링 함수
+        function renderMenu(date) {
+            menuContainer.innerHTML = ''; // 기존 메뉴 비우기
+            const menuList = mockMenuData[date];
+
+            // 데이터가 있는 경우
+            if (menuList) {
+                menuList.forEach((item, index) => {
+                    // 약간의 애니메이션 딜레이 효과를 위해 style 추가
+                    const delay = index * 0.1;
+                    const menuItemHtml = `
+                        <div class="bg-pink-100/50 rounded-2xl p-4 flex justify-between items-center border border-pink-100 shadow-sm transition transform hover:-translate-y-1 hover:shadow-md" style="animation: fadeIn 0.5s ease-out ${delay}s both;">
+                            <span class="text-pink-900 font-bold text-lg">${item.name}</span>
+                            <div class="flex gap-1 items-center">
+                                ${getAllergyHtml(item.allergies)}
+                            </div>
+                        </div>
+                    `;
+                    menuContainer.insertAdjacentHTML('beforeend', menuItemHtml);
+                });
+            } 
+            // 데이터가 없는 경우 (주말, 혹은 샘플 데이터 없는 날)
+            else {
+                menuContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-pink-400 py-10" style="animation: fadeIn 0.5s ease-out;">
+                        <span class="text-5xl mb-3">🌷</span>
+                        <p class="font-bold text-lg">오늘은 급식이 없는 날이에요!</p>
+                        <p class="text-sm">맛있는 거 드시고 푹 쉬세요 공주님</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 3. 이벤트 리스너: 날짜가 바뀔 때마다 메뉴 다시 그리기
+        datePicker.addEventListener('change', (e) => {
+            renderMenu(e.target.value);
+        });
+
+        // 4. 초기화: 앱이 켜졌을 때 기본 날짜(2026-07-02) 설정 및 렌더링
+        const initialDate = "2026-07-02";
+        datePicker.value = initialDate;
+        renderMenu(initialDate);
+
+        // 간단한 페이드인 애니메이션 (CSS) 추가
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
